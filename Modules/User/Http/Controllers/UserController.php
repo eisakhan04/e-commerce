@@ -74,4 +74,34 @@ class UserController extends Controller
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
     }
+
+    public function logout(Request $request)
+    {
+        try {
+            $this->userservice->logout($request->user());
+            return $this->success([], 'Logged out', HttpCode::OK->value);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), HttpCode::SERVER_ERROR->value);
+        }
+    }
+
+    public function register(Request $request)
+    {
+        try {
+            $result = $this->userservice->register($request->all());
+            return $this->success($result, UserMessage::USER_CREATED, HttpCode::CREATED->value);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        try {
+            $result = $this->userservice->login($request->all());
+            return $this->success($result, UserMessage::USER_LOGGED_IN, HttpCode::OK->value);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), HttpCode::UNAUTHORIZED->value);
+        }
+    }
 }
