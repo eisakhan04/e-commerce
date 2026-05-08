@@ -24,8 +24,10 @@ class UserService extends BaseService implements UserServiceInterface
 
     public function register(array $data)
     {
+        // return $data;
         $data['password'] = Hash::make($data['password']);
         $user = $this->repository->create($data);
+        $user->assignRole('user');
 
         return [
             'user' => $user,
@@ -50,5 +52,19 @@ class UserService extends BaseService implements UserServiceInterface
     public function logout($user)
     {
         return $user->tokens()->delete();
+    }
+
+    public function assignRole($userId, $roleName)
+    {
+        $user = $this->repository->find($userId);
+        $user->assignRole($roleName);
+        return $user->load('roles');
+    }
+
+    public function removeRole($userId, $roleName)
+    {
+        $user = $this->repository->find($userId);
+        $user->removeRole($roleName);
+        return $user->load('roles');
     }
 }

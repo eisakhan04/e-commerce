@@ -12,4 +12,6 @@ class UserMessage
     const USER_NOT_FOUND = 'User not found.';
     const INVALID_CREDENTIALS = 'Invalid credentials.';
     const USER_LOGGED_IN = 'User logged in successfully.';
+    const USER_LOGGED_OUT = 'User logged out successfully.';
+
 }

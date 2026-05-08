@@ -79,7 +79,7 @@ class UserController extends Controller
     {
         try {
             $this->userservice->logout($request->user());
-            return $this->success([], 'Logged out', HttpCode::OK->value);
+            return $this->success([], UserMessage::USER_LOGGED_OUT, HttpCode::OK->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::SERVER_ERROR->value);
         }
@@ -87,6 +87,7 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
+        // return $request->all();
         try {
             $result = $this->userservice->register($request->all());
             return $this->success($result, UserMessage::USER_CREATED, HttpCode::CREATED->value);
@@ -94,6 +95,16 @@ class UserController extends Controller
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
     }
+    // public function register(Request $request)
+    // {
+    //     // Agar $request->all() khali hai toh isse check karein:
+    //     return response()->json([
+    //         'all_data' => $request->all(),
+    //         'content' => $request->getContent(), // Ye dekhega ke raw body mein kya hai
+    //         'content_type' => $request->header('Content-Type') // Ye check karega headers set hain ya nahi
+    //     ]);
+    // }
+
 
     public function login(Request $request)
     {
@@ -102,6 +113,34 @@ class UserController extends Controller
             return $this->success($result, UserMessage::USER_LOGGED_IN, HttpCode::OK->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::UNAUTHORIZED->value);
+        }
+    }
+
+    public function assignRole(Request $request, $id)
+    {
+        $request->validate([
+            'role' => 'required|string|exists:roles,name',
+        ]);
+
+        try {
+            $user = $this->userservice->assignRole($id, $request->role);
+            return $this->success($user, 'Role assigned successfully', HttpCode::OK->value);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
+        }
+    }
+
+    public function removeRole(Request $request, $id)
+    {
+        $request->validate([
+            'role' => 'required|string|exists:roles,name',
+        ]);
+
+        try {
+            $user = $this->userservice->removeRole($id, $request->role);
+            return $this->success($user, 'Role removed successfully', HttpCode::OK->value);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
     }
 }

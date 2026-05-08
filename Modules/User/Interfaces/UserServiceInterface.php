@@ -10,4 +10,6 @@ interface UserServiceInterface extends BaseServiceInterface
     public function register(array $data);
     public function login(array $credentials);
     public function logout($user);
+    public function assignRole($userId, $roleName);
+    public function removeRole($userId, $roleName);
 }

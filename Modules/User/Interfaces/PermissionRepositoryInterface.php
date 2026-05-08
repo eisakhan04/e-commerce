@@ -1,0 +1,12 @@
+<?php
+
+namespace Modules\User\Interfaces;
+
+interface PermissionRepositoryInterface
+{
+    public function findAll();
+    public function find($id);
+    public function create(array $data);
+    public function update($id, array $data);
+    public function delete($id);
+}

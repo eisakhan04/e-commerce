@@ -60,5 +60,21 @@ class UserServiceProvider extends ModuleServiceProvider
             \Modules\User\Interfaces\UserServiceInterface::class,
             \Modules\User\Services\UserService::class
         );
+        $this->app->bind(
+            \Modules\User\Interfaces\RoleRepositoryInterface::class,
+            \Modules\User\Repositories\RoleRepository::class
+        );
+        $this->app->bind(
+            \Modules\User\Interfaces\PermissionRepositoryInterface::class,
+            \Modules\User\Repositories\PermissionRepository::class
+        );
+        $this->app->bind(
+            \Modules\User\Interfaces\RoleServiceInterface::class,
+            \Modules\User\Services\RoleService::class
+        );
+        $this->app->bind(
+            \Modules\User\Interfaces\PermissionServiceInterface::class,
+            \Modules\User\Services\PermissionService::class
+        );
     }
 }
