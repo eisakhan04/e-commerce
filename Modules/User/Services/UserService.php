@@ -6,6 +6,7 @@ use App\Services\BaseService;
 use Illuminate\Support\Facades\Hash;
 use Modules\User\Interfaces\UserRepositoryInterface;
 use Modules\User\Interfaces\UserServiceInterface;
+use Modules\User\Constants\UserMessage;
 use Exception;
 
 class UserService extends BaseService implements UserServiceInterface
@@ -40,7 +41,7 @@ class UserService extends BaseService implements UserServiceInterface
         $user = $this->repository->findByEmail($credentials['email']);
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            throw new Exception('Invalid credentials');
+            throw new Exception(UserMessage::INVALID_CREDENTIALS);
         }
 
         return [

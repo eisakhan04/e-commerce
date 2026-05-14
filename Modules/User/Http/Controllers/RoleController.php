@@ -6,24 +6,25 @@ use App\Enums\HttpCode;
 use App\Http\Controllers\Controller;
 use App\Traits\ResponseTrait;
 use Exception;
+use Illuminate\Support\Facades\Request;
 use Modules\User\Constants\RoleMessage;
 use Modules\User\Interfaces\RoleServiceInterface;
-use Modules\User\Requests\StoreRoleRequest;
-use Modules\User\Requests\UpdateRoleRequest;
+use Modules\User\Requests\RoleRequest;
 use Modules\User\Requests\AssignPermissionsRequest;
+use Modules\User\Services\RoleService;
 
 class RoleController extends Controller
 {
     use ResponseTrait;
 
-    protected $roleService;
+    protected RoleService $roleService;
 
     public function __construct(RoleServiceInterface $roleService)
     {
         $this->roleService = $roleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
             $roles = $this->roleService->findAll();
@@ -33,7 +34,7 @@ class RoleController extends Controller
         }
     }
 
-    public function store(StoreRoleRequest $request)
+    public function store(RoleRequest $request) 
     {
         try {
             $role = $this->roleService->create($request->validated());
@@ -43,7 +44,7 @@ class RoleController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         try {
             $role = $this->roleService->find($id);
@@ -53,7 +54,7 @@ class RoleController extends Controller
         }
     }
 
-    public function update(UpdateRoleRequest $request, $id)
+    public function update(RoleRequest $request, int $id)
     {
         try {
             $role = $this->roleService->update($id, $request->validated());
@@ -63,7 +64,7 @@ class RoleController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(int$id)
     {
         try {
             $this->roleService->delete($id);
@@ -73,7 +74,7 @@ class RoleController extends Controller
         }
     }
 
-    public function assignPermissions(AssignPermissionsRequest $request, $id)
+    public function assignPermissions(AssignPermissionsRequest $request, int $id)
     {
         try {
             $role = $this->roleService->assignPermissions($id, $request->permissions);

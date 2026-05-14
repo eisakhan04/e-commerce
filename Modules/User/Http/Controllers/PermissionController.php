@@ -8,14 +8,15 @@ use App\Traits\ResponseTrait;
 use Exception;
 use Modules\User\Constants\PermissionMessage;
 use Modules\User\Interfaces\PermissionServiceInterface;
-use Modules\User\Requests\StorePermissionRequest;
-use Modules\User\Requests\UpdatePermissionRequest;
+use Modules\User\Requests\PermissionRequest;
+use Modules\User\Services\PermissionService;
 
 class PermissionController extends Controller
 {
     use ResponseTrait;
 
-    protected $permissionService;
+    
+    protected  PermissionService $permissionService;
 
     public function __construct(PermissionServiceInterface $permissionService)
     {
@@ -32,7 +33,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function store(StorePermissionRequest $request)
+    public function store(PermissionRequest $request)
     {
         try {
             $permission = $this->permissionService->create($request->validated());
@@ -42,7 +43,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         try {
             $permission = $this->permissionService->find($id);
@@ -52,7 +53,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function update(UpdatePermissionRequest $request, $id)
+    public function update(PermissionRequest $request, int $id)
     {
         try {
             $permission = $this->permissionService->update($id, $request->validated());
@@ -62,7 +63,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         try {
             $this->permissionService->delete($id);

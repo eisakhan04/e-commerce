@@ -8,14 +8,18 @@ use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Http\Request;
 use Modules\User\Constants\UserMessage;
+use Modules\User\Constants\RoleMessage;
 use Modules\User\Interfaces\UserServiceInterface;
+use Modules\User\Requests\UserRequest;
+use Modules\User\Requests\UserRoleRequest;
+use Modules\User\Requests\LoginUserRequest;
 use Modules\User\Services\UserService;
 
 class UserController extends Controller
 {
     use ResponseTrait;
 
-    protected $userservice;
+    protected UserService $userservice;
 
     public function __construct(UserServiceInterface $userservice)
     {
@@ -32,7 +36,7 @@ class UserController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         try {
             $user = $this->userservice->find($id);
@@ -45,27 +49,27 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         try {
-            $user = $this->userservice->create($request->all());
+            $user = $this->userservice->create($request->validated());
             return $this->success($user, UserMessage::USER_CREATED, HttpCode::CREATED->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, int $id)
     {
         try {
-            $user = $this->userservice->update($id, $request->all());
+            $user = $this->userservice->update($id, $request->validated());
             return $this->success($user, UserMessage::USER_UPDATED, HttpCode::OK->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         try {
             $this->userservice->delete($id);
@@ -85,11 +89,10 @@ class UserController extends Controller
         }
     }
 
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        // return $request->all();
         try {
-            $result = $this->userservice->register($request->all());
+            $result = $this->userservice->register($request->validated());
             return $this->success($result, UserMessage::USER_CREATED, HttpCode::CREATED->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
@@ -106,39 +109,31 @@ class UserController extends Controller
     // }
 
 
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
         try {
-            $result = $this->userservice->login($request->all());
+            $result = $this->userservice->login($request->validated());
             return $this->success($result, UserMessage::USER_LOGGED_IN, HttpCode::OK->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::UNAUTHORIZED->value);
         }
     }
 
-    public function assignRole(Request $request, $id)
+    public function assignRole(UserRoleRequest $request, int $id)
     {
-        $request->validate([
-            'role' => 'required|string|exists:roles,name',
-        ]);
-
         try {
             $user = $this->userservice->assignRole($id, $request->role);
-            return $this->success($user, 'Role assigned successfully', HttpCode::OK->value);
+            return $this->success($user, RoleMessage::ROLE_ASSIGNED, HttpCode::OK->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
     }
 
-    public function removeRole(Request $request, $id)
+    public function removeRole(UserRoleRequest $request, int $id)
     {
-        $request->validate([
-            'role' => 'required|string|exists:roles,name',
-        ]);
-
         try {
             $user = $this->userservice->removeRole($id, $request->role);
-            return $this->success($user, 'Role removed successfully', HttpCode::OK->value);
+            return $this->success($user, RoleMessage::ROLE_REMOVED, HttpCode::OK->value);
         } catch (Exception $e) {
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
