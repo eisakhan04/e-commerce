@@ -2,36 +2,19 @@
 
 namespace Modules\User\Repositories;
 
+use App\Repositories\BaseRepository;
 use Modules\User\Interfaces\PermissionRepositoryInterface;
 use Spatie\Permission\Models\Permission;
 
-class PermissionRepository implements PermissionRepositoryInterface
+class PermissionRepository extends BaseRepository implements PermissionRepositoryInterface
 {
+    public function __construct(Permission $model)
+    {
+        parent::__construct($model);
+    }
+
     public function findAll()
     {
-        return Permission::all();
-    }
-
-    public function find($id)
-    {
-        return Permission::findOrFail($id);
-    }
-
-    public function create(array $data)
-    {
-        return Permission::create($data);
-    }
-
-    public function update($id, array $data)
-    {
-        $permission = Permission::findOrFail($id);
-        $permission->update($data);
-        return $permission;
-    }
-
-    public function delete($id)
-    {
-        $permission = Permission::findOrFail($id);
-        return $permission->delete();
+        return $this->all();
     }
 }

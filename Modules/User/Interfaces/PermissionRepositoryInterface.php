@@ -2,11 +2,9 @@
 
 namespace Modules\User\Interfaces;
 
-interface PermissionRepositoryInterface
+use App\Interfaces\BaseRepositoryInterface;
+
+interface PermissionRepositoryInterface extends BaseRepositoryInterface
 {
     public function findAll();
-    public function find($id);
-    public function create(array $data);
-    public function update($id, array $data);
-    public function delete($id);
 }

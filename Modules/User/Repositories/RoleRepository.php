@@ -2,42 +2,25 @@
 
 namespace Modules\User\Repositories;
 
+use App\Repositories\BaseRepository;
 use Modules\User\Interfaces\RoleRepositoryInterface;
 use Spatie\Permission\Models\Role;
 
-class RoleRepository implements RoleRepositoryInterface
+class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 {
+    public function __construct(Role $model)
+    {
+        parent::__construct($model);
+    }
+
     public function findAll()
     {
-        return Role::with('permissions')->get();
+        return $this->model->with('permissions')->get();
     }
 
-    public function find($id)
+    public function assignPermissions(int $id, array $permissions)
     {
-        return Role::with('permissions')->findOrFail($id);
-    }
-
-    public function create(array $data)
-    {
-        return Role::create($data);
-    }
-
-    public function update($id, array $data)
-    {
-        $role = Role::findOrFail($id);
-        $role->update($data);
-        return $role;
-    }
-
-    public function delete($id)
-    {
-        $role = Role::findOrFail($id);
-        return $role->delete();
-    }
-
-    public function assignPermissions($id, array $permissions)
-    {
-        $role = Role::findOrFail($id);
+        $role = $this->find($id);
         $role->syncPermissions($permissions);
         return $role->load('permissions');
     }
