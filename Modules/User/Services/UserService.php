@@ -38,14 +38,19 @@ class UserService extends BaseService implements UserServiceInterface
 
     public function login(array $credentials)
     {
-        $user = $this->repository->findByEmail($credentials['email']);
+        $user = null;
+        if (!empty($credentials['email'])) {
+            $user = $this->repository->findByEmail($credentials['email']);
+        } elseif (!empty($credentials['phone'])) {
+            $user = $this->repository->findByPhone($credentials['phone']);
+        }
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw new Exception(UserMessage::INVALID_CREDENTIALS);
         }
 
         return [
-            'user' => $user,
+            'user' => $user->load('roles'),
             'token' => $user->createToken('auth_token')->plainTextToken
         ];
     }

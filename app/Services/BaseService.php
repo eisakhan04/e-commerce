@@ -6,7 +6,7 @@ use App\Interfaces\BaseServiceInterface;
 
 class BaseService implements BaseServiceInterface
 {
-    protected $repository;
+    protected $repository ;
     
     public function __construct($repository)
     {

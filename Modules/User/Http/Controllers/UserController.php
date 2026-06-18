@@ -138,4 +138,14 @@ class UserController extends Controller
             return $this->error($e->getMessage(), HttpCode::UNPROCESSABLE->value);
         }
     }
+
+    public function profile(Request $request)
+    {
+        try {
+            $user = $request->user()->load('roles');
+            return $this->success($user, UserMessage::USER_FOUND, HttpCode::OK->value);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage(), HttpCode::SERVER_ERROR->value);
+        }
+    }
 }

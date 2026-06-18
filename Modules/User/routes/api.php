@@ -13,6 +13,7 @@ Route::prefix('v1')->group(function () {
 
     // Protected Routes 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/profile', [UserController::class, 'profile']);
         Route::apiResource('users', UserController::class);
         Route::post('users/{id}/assign-role', [UserController::class, 'assignRole']);
         Route::post('users/{id}/remove-role', [UserController::class, 'removeRole']);
